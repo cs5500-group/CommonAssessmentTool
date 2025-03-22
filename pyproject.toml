@@ -1,0 +1,24 @@
+[tool.pylint]
+# Set the Python version
+py-version = "3.12"
+
+# Disable specific warnings if you find them too noisy
+disable = [
+    "C0114",  # missing-module-docstring
+    "C0115",  # missing-class-docstring
+    "C0116",  # missing-function-docstring
+    "R0903",  # too-few-public-methods
+]
+
+# Customize max line length
+max-line-length = 100
+
+# Enable good practices
+enable = ["useless-suppression", "deprecated-module"]
+
+# Optional: Set the init-hook to point to your project if needed
+# init-hook = 'import sys; sys.path.append("src")'
+
+[tool.pylint.'MESSAGES CONTROL']
+# You can also fine-tune message control here
+confidence = ["HIGH", "INFERENCE", "INFERENCE_FAILURE"]
