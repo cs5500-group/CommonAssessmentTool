@@ -8,14 +8,12 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 from app.auth.router import get_current_user, get_admin_user
 from app.models import User, UserRole
-from app.clients.service.logic import interpret_and_calculate
-from app.clients.schema import PredictionInput
 
 from app.database import get_db
 from app.clients.service.client_service import ClientService
 from app.clients.schema import (
-    ClientResponse, 
-    ClientUpdate, 
+    ClientResponse,
+    ClientUpdate,
     ClientListResponse,
     ServiceResponse,
     ServiceUpdate
@@ -23,13 +21,9 @@ from app.clients.schema import (
 
 router = APIRouter(prefix="/clients", tags=["clients"])
 
-@router.post("/predictions")
-async def predict(data: PredictionInput):
-    return interpret_and_calculate(data.model_dump())
-
 @router.get("/", response_model=ClientListResponse)
 async def get_clients(
-    current_user: User = Depends(get_admin_user), 
+    _: User = Depends(get_admin_user),
     skip: int = Query(default=0, ge=0, description="Number of records to skip"),
     limit: int = Query(default=50, ge=1, le=150, description="Maximum number of records to return"),
     db: Session = Depends(get_db)
@@ -39,7 +33,7 @@ async def get_clients(
 @router.get("/{client_id}", response_model=ClientResponse)
 async def get_client(
     client_id: int,
-    current_user: User = Depends(get_admin_user),
+    _: User = Depends(get_admin_user),
     db: Session = Depends(get_db)
 ):
     """Get a specific client by ID"""
@@ -71,7 +65,7 @@ async def get_clients_by_criteria(
     substance_use: Optional[bool] = None,
     time_unemployed: Optional[int] = Query(None, ge=0),
     need_mental_health_support_bool: Optional[bool] = None,
-    current_user: User = Depends(get_admin_user),
+    _: User = Depends(get_admin_user),
     db: Session = Depends(get_db)
 ):
     """Search clients by any combination of criteria"""
@@ -112,7 +106,7 @@ async def get_clients_by_services(
     employment_related_financial_supports: Optional[bool] = None,
     employer_financial_supports: Optional[bool] = None,
     enhanced_referrals: Optional[bool] = None,
-    current_user: User = Depends(get_admin_user),
+    _: User = Depends(get_admin_user),
     db: Session = Depends(get_db)
 ):
     """Get clients filtered by multiple service statuses"""
@@ -130,7 +124,7 @@ async def get_clients_by_services(
 @router.get("/{client_id}/services", response_model=List[ServiceResponse])
 async def get_client_services(
     client_id: int,
-    current_user: User = Depends(get_admin_user),
+    _: User = Depends(get_admin_user),
     db: Session = Depends(get_db)
 ):
     """Get all services and their status for a specific client, including case worker info"""
@@ -139,7 +133,7 @@ async def get_client_services(
 @router.get("/search/success-rate", response_model=List[ClientResponse])
 async def get_clients_by_success_rate(
     min_rate: int = Query(70, ge=0, le=100, description="Minimum success rate percentage"),
-    current_user: User = Depends(get_admin_user),
+    _: User = Depends(get_admin_user),
     db: Session = Depends(get_db)
 ):
     """Get clients with success rate above specified threshold"""
@@ -148,7 +142,7 @@ async def get_clients_by_success_rate(
 @router.get("/case-worker/{case_worker_id}", response_model=List[ClientResponse])
 async def get_clients_by_case_worker(
     case_worker_id: int,
-    current_user: User = Depends(get_current_user), 
+    _: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     return ClientService.get_clients_by_case_worker(db, case_worker_id)
@@ -157,7 +151,7 @@ async def get_clients_by_case_worker(
 async def update_client(
     client_id: int,
     client_data: ClientUpdate,
-    current_user: User = Depends(get_admin_user),
+    _: User = Depends(get_admin_user),
     db: Session = Depends(get_db)
 ):
     """Update a client's information"""
@@ -168,7 +162,7 @@ async def update_client_services(
     client_id: int,
     user_id: int,
     service_update: ServiceUpdate,
-    current_user: User = Depends(get_current_user),  
+    _: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     return ClientService.update_client_services(db, client_id, user_id, service_update)
@@ -177,7 +171,7 @@ async def update_client_services(
 async def create_case_assignment(
     client_id: int,
     case_worker_id: int = Query(..., description="Case worker ID to assign"),
-    current_user: User = Depends(get_admin_user),
+    _: User = Depends(get_admin_user),
     db: Session = Depends(get_db)
 ):
     """Create a new case assignment for a client with a case worker"""
@@ -186,9 +180,10 @@ async def create_case_assignment(
 @router.delete("/{client_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_client(
     client_id: int,
-    current_user: User = Depends(get_admin_user),
+    _: User = Depends(get_admin_user),
     db: Session = Depends(get_db)
 ):
     """Delete a client"""
     ClientService.delete_client(db, client_id)
     return None
+
