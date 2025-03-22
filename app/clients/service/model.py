@@ -16,7 +16,6 @@ from sklearn.ensemble import RandomForestRegressor
 def prepare_models():
     """
     Prepare and train the Random Forest model using the dataset.
-    
     Returns:
         RandomForestRegressor: Trained model for predicting success rates
     """
@@ -80,7 +79,6 @@ def prepare_models():
 def save_model(model, filename="model.pkl"):
     """
     Save the trained model to a file.
-    
     Args:
         model: Trained model to save
         filename (str): Name of the file to save the model to
@@ -92,10 +90,8 @@ def save_model(model, filename="model.pkl"):
 def load_model(filename="model.pkl"):
     """
     Load a trained model from a file.
-    
     Args:
         filename (str): Name of the file to load the model from
-    
     Returns:
         The loaded model
     """

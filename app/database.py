@@ -23,7 +23,6 @@ Base = declarative_base()
 def get_db():
     """
     Creates a database session and ensures it's closed after use.
-  
     Yields:
         Session: SQLAlchemy database session
     """
