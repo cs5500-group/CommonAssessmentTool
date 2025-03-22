@@ -80,7 +80,6 @@ def train_model_1(features_train, targets_train):
     Returns:
         RandomForestRegressor: Trained model for predicting success rates
     """
-   
     # Initialize and train the model
     model = RandomForestRegressor(n_estimators=100, random_state=42)
     model.fit(features_train, targets_train)
@@ -93,7 +92,6 @@ def train_model_2(features_train, targets_train):
     Returns:
         LinearRegression: Trained model for predicting success rates
     """
-   
     # Initialize and train the model
     model = LinearRegression()
     model.fit(features_train, targets_train)
@@ -106,7 +104,6 @@ def train_model_3(features_train, targets_train):
     Returns:
         GradientBoostingRegressor: Trained model for predicting success rates
     """
-   
     # Initialize and train the model
     model = GradientBoostingRegressor(n_estimators=100, random_state=42)
     model.fit(features_train, targets_train)
