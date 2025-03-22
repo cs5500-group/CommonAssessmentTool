@@ -140,9 +140,9 @@ def main():
     model_1 = train_model_1(features_train, targets_train)
     model_2 = train_model_2(features_train, targets_train)
     model_3 = train_model_3(features_train, targets_train)
-    save_model(model_1, filename="model_1.pkl")
-    save_model(model_2, filename="model_2.pkl")
-    save_model(model_3, filename="model_3.pkl")
+    save_model(model_1, filename="random_forest.pkl")
+    save_model(model_2, filename="linear_regression.pkl")
+    save_model(model_3, filename="gradient_boost.pkl")
     print("Model training completed and saved successfully.")
 
 
