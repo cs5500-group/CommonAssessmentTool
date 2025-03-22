@@ -8,6 +8,8 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 from app.auth.router import get_current_user, get_admin_user
 from app.models import User, UserRole
+from app.clients.service.logic import interpret_and_calculate
+from app.clients.schema import PredictionInput
 
 from app.database import get_db
 from app.clients.service.client_service import ClientService
@@ -20,6 +22,10 @@ from app.clients.schema import (
 )
 
 router = APIRouter(prefix="/clients", tags=["clients"])
+
+@router.post("/predictions")
+ async def predict(data: PredictionInput):
+     return interpret_and_calculate(data.model_dump())
 
 @router.get("/", response_model=ClientListResponse)
 async def get_clients(
