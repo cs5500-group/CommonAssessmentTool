@@ -5,10 +5,10 @@ Handles all HTTP requests for client operations including create, read, update, 
 
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
-from typing import List, Optional
+from typing import List, Optional, Dict
 from app.auth.router import get_current_user, get_admin_user
 from app.models import User, UserRole
-from app.clients.service.logic import interpret_and_calculate
+from app.clients.service.logic import interpret_and_calculate, MODEL
 from app.clients.schema import PredictionInput
 
 from app.database import get_db
@@ -24,12 +24,11 @@ from app.clients.schema import (
 router = APIRouter(prefix="/clients", tags=["clients"])
 
 @router.post("/predictions")
- async def predict(data: PredictionInput):
-     return interpret_and_calculate(data.model_dump())
+async def predict(data: PredictionInput):
+    return interpret_and_calculate(data.model_dump())
 
 @router.get("/", response_model=ClientListResponse)
 async def get_clients(
-    _: User = Depends(get_admin_user),
     skip: int = Query(default=0, ge=0, description="Number of records to skip"),
     limit: int = Query(default=50, ge=1, le=150, description="Maximum number of records to return"),
     db: Session = Depends(get_db)
@@ -193,3 +192,100 @@ async def delete_client(
     ClientService.delete_client(db, client_id)
     return None
 
+
+@router.get("/models/current", response_model=Dict[str, str])
+async def get_current_model():
+    """Get the name and type of the currently active model."""
+    model_type = type(MODEL).__name__
+
+    return {
+        "name": "random_forest",
+        "type": model_type
+    }
+
+
+@router.get("/models/available", response_model=List[Dict[str, str]])
+async def get_available_models():
+    """Get list of available models with their types."""
+
+    return [
+        {"name": "random_forest", "type": "RandomForestRegressor"}
+    ]
+
+
+@router.put("/models/current/{model_name}", response_model=Dict[str, str])
+async def set_current_model(model_name: str):
+    """Set the current model to use."""
+    import logging
+    logger = logging.getLogger("uvicorn")
+
+    # Get available models
+    logger.info(f"Attempting to switch to model: {model_name}")
+    available_models = await get_available_models()
+    model_names = [model["name"] for model in available_models]
+    logger.info(f"Available models: {model_names}")
+
+    # Validate model name
+    if model_name not in model_names:
+        logger.error(f"Model '{model_name}' not found in available models")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Model '{model_name}' not found. Available models: {model_names}"
+        )
+
+    try:
+        # Check current model type
+        from app.clients.service import logic
+        current_model_type = type(logic.MODEL).__name__
+        logger.info(f"Current model type: {current_model_type}")
+
+        if model_name == "random_forest" and current_model_type == "RandomForestRegressor":
+            return {
+                "name": model_name,
+                "type": current_model_type
+            }
+
+        # Build model path
+        import os
+        CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+        MODEL_PATH = os.path.join(CURRENT_DIR, 'service', f'{model_name}.pkl')
+        logger.info(f"Looking for model at: {MODEL_PATH}")
+
+        # Check if file exists
+        if not os.path.exists(MODEL_PATH):
+            logger.error(f"Model file not found at: {MODEL_PATH}")
+            # Try to list files in directory
+            service_dir = os.path.join(CURRENT_DIR, 'service')
+            if os.path.exists(service_dir):
+                files = os.listdir(service_dir)
+                logger.info(f"Files in service directory: {files}")
+
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Model file '{model_name}.pkl' not found"
+            )
+
+        # Load model
+        import pickle
+        logger.info(f"Loading model from: {MODEL_PATH}")
+        with open(MODEL_PATH, "rb") as model_file:
+            new_model = pickle.load(model_file)
+
+        logger.info(f"Loaded model type: {type(new_model).__name__}")
+
+        # Update the MODEL variable
+        logic.MODEL = new_model
+        logger.info("Model successfully updated")
+
+        return {
+            "name": model_name,
+            "type": type(new_model).__name__
+        }
+    except Exception as e:
+        import traceback
+        logger.error(f"Error setting model: {str(e)}")
+        logger.error(traceback.format_exc())
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error setting model: {str(e)}"
+        )

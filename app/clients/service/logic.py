@@ -100,7 +100,7 @@ def convert_text(text_data: str):
         if text_data in category:
             return category[text_data]
 
-    return int(text_data) if text_data.isnumeric() else text_data
+    return int(text_data) if text_data.isnumeric() else 0
 
 def create_matrix(row_data):
     """

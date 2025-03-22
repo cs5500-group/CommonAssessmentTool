@@ -12,6 +12,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 
+
 def prepare_models():
     """
     Prepare and train the Random Forest model using the dataset.
@@ -75,6 +76,7 @@ def prepare_models():
     model.fit(features_train, targets_train)
     return model
 
+
 def save_model(model, filename="model.pkl"):
     """
     Save the trained model to a file.
@@ -85,6 +87,7 @@ def save_model(model, filename="model.pkl"):
     """
     with open(filename, "wb") as model_file:
         pickle.dump(model, model_file)
+
 
 def load_model(filename="model.pkl"):
     """
@@ -99,12 +102,14 @@ def load_model(filename="model.pkl"):
     with open(filename, "rb") as model_file:
         return pickle.load(model_file)
 
+
 def main():
     """Main function to train and save the model."""
     print("Starting model training...")
     model = prepare_models()
     save_model(model)
     print("Model training completed and saved successfully.")
+
 
 if __name__ == "__main__":
     main()
