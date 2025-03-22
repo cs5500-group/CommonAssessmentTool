@@ -11,15 +11,17 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.linear_model import LinearRegression
+from sklearn.ensemble import GradientBoostingRegressor
 
 
-def prepare_models():
+def prepare_training_data():
     """
-    Prepare and train the Random Forest model using the dataset.
+    Loads and prepares the dataset for training.
     Returns:
-        RandomForestRegressor: Trained model for predicting success rates
+        tuple: (features_train, targets_train)
     """
-    # Load dataset
+     # Load dataset
     data = pd.read_csv('data_commontool.csv')
     # Define feature columns
     feature_columns = [
@@ -70,11 +72,45 @@ def prepare_models():
         test_size=0.2,
         random_state=42
     )
+    return features_train, targets_train
+
+def train_model_1(features_train, targets_train):
+    """
+    Train the Random Forest model using the dataset.
+    Returns:
+        RandomForestRegressor: Trained model for predicting success rates
+    """
+   
     # Initialize and train the model
     model = RandomForestRegressor(n_estimators=100, random_state=42)
     model.fit(features_train, targets_train)
     return model
 
+
+def train_model_2(features_train, targets_train):
+    """
+    Train the Linear Regression model using the dataset.
+    Returns:
+        LinearRegression: Trained model for predicting success rates
+    """
+   
+    # Initialize and train the model
+    model = LinearRegression()
+    model.fit(features_train, targets_train)
+    return model
+
+
+def train_model_3(features_train, targets_train):
+    """
+    Train the Gradient Boost model using the dataset.
+    Returns:
+        GradientBoostingRegressor: Trained model for predicting success rates
+    """
+   
+    # Initialize and train the model
+    model = GradientBoostingRegressor(n_estimators=100, random_state=42)
+    model.fit(features_train, targets_train)
+    return model
 
 def save_model(model, filename="model.pkl"):
     """
@@ -100,10 +136,16 @@ def load_model(filename="model.pkl"):
 
 
 def main():
+    features_train, targets_train = prepare_training_data()
+
     """Main function to train and save the model."""
     print("Starting model training...")
-    model = prepare_models()
-    save_model(model)
+    model_1 = train_model_1(features_train, targets_train)
+    model_2 = train_model_2(features_train, targets_train)
+    model_3 = train_model_3(features_train, targets_train)
+    save_model(model_1, filename="model_1.pkl")
+    save_model(model_2, filename="model_2.pkl")
+    save_model(model_3, filename="model_3.pkl")
     print("Model training completed and saved successfully.")
 
 
