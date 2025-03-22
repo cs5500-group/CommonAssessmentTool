@@ -212,6 +212,8 @@ async def get_current_model():
     model_type = type(logic.MODEL).__name__
     model_type_to_name = {
         "RandomForestRegressor": "random_forest",
+        "LinearRegression": "linear_regression",
+        "GradientBoostingRegressor": "gradient_boost"
     }
     model_name = model_type_to_name.get(model_type, model_type.lower())
     return {
@@ -227,6 +229,14 @@ async def get_available_models():
         {
             "name": "random_forest",
             "type": "RandomForestRegressor"
+        },
+        {
+            "name": "linear_regression",
+            "type": "LinearRegression"
+        },
+                {
+            "name": "gradient_boost",
+            "type": "GradientBoostingRegressor"
         }
     ]
     return available_models

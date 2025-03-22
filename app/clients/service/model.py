@@ -74,7 +74,7 @@ def prepare_training_data():
     )
     return features_train, targets_train
 
-def train_model_1(features_train, targets_train):
+def train_model_rf(features_train, targets_train):
     """
     Train the Random Forest model using the dataset.
     Returns:
@@ -86,7 +86,7 @@ def train_model_1(features_train, targets_train):
     return model
 
 
-def train_model_2(features_train, targets_train):
+def train_model_lr(features_train, targets_train):
     """
     Train the Linear Regression model using the dataset.
     Returns:
@@ -98,7 +98,7 @@ def train_model_2(features_train, targets_train):
     return model
 
 
-def train_model_3(features_train, targets_train):
+def train_model_gb(features_train, targets_train):
     """
     Train the Gradient Boost model using the dataset.
     Returns:
@@ -137,12 +137,12 @@ def main():
 
     """Main function to train and save the model."""
     print("Starting model training...")
-    model_1 = train_model_1(features_train, targets_train)
-    model_2 = train_model_2(features_train, targets_train)
-    model_3 = train_model_3(features_train, targets_train)
-    save_model(model_1, filename="random_forest.pkl")
-    save_model(model_2, filename="linear_regression.pkl")
-    save_model(model_3, filename="gradient_boost.pkl")
+    model_rf = train_model_rf(features_train, targets_train)
+    model_lr = train_model_lr(features_train, targets_train)
+    model_gb = train_model_gb(features_train, targets_train)
+    save_model(model_rf, filename="random_forest.pkl")
+    save_model(model_lr, filename="linear_regression.pkl")
+    save_model(model_gb, filename="gradient_boost.pkl")
     print("Model training completed and saved successfully.")
 
 
