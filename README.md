@@ -55,3 +55,19 @@ This also has an API file to interact with the front end, and logic in order to 
 
 -Create case assignment (Allow authorized users to create a new case assignment.)
 
+-------------------------How to run the application with Docker-------------------------
+
+### Prerequisites
+- Docker installed on your machine. Visit [Docker's website](https://www.docker.com/get-started) for installation instructions.
+
+1. Build the Docker image:
+   ```bash
+   docker build -t common-assessment-tool-app .
+   ```
+
+2. Run the application:
+    ```bash
+    docker run -p 8000:8000 common-assessment-tool-app
+    ```
+    
+3. Go to SwaggerUI (http://127.0.0.1:8000/docs)
