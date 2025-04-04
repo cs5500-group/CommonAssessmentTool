@@ -30,7 +30,7 @@ jobs:
       - name: Run Linters and Formatters
         run: |
           # Run flake8 for code linting
-          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --extend-ignore=W291,W293,E303
           # Run pylint 
           pylint --disable=C0111,C0103 --ignore-patterns=test_.*?py --recursive=y .
 
