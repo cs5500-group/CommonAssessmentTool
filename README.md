@@ -76,7 +76,7 @@ This also has an API file to interact with the front end, and logic in order to 
 
 To start the service using Docker Compose, run:
 ```bash
-docker compose down
+docker compose up
 ```
 
 To stop the service, run:
