@@ -234,7 +234,7 @@ async def get_available_models():
             "name": "linear_regression",
             "type": "LinearRegression"
         },
-                {
+        {
             "name": "gradient_boost",
             "type": "GradientBoostingRegressor"
         }
