@@ -71,3 +71,15 @@ This also has an API file to interact with the front end, and logic in order to 
     ```
     
 3. Go to SwaggerUI (http://127.0.0.1:8000/docs)
+
+-------------------------How to run the application with Docker compose-------------------------
+
+To start the service using Docker Compose, run:
+```bash
+docker compose down
+```
+
+To stop the service, run:
+```bash
+docker compose down
+```
