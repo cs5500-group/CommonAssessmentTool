@@ -19,6 +19,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import relationship
 from app.database import Base
 
+
 class UserRole(str, enum.Enum):
     """
     Enumeration for user roles in the application.
@@ -29,6 +30,7 @@ class UserRole(str, enum.Enum):
     """
     admin = "admin"
     case_worker = "case_worker"
+
 
 class User(Base):
     """User model representing application users."""
@@ -41,6 +43,7 @@ class User(Base):
     role = Column(Enum(UserRole), nullable=False)
 
     cases = relationship("ClientCase", back_populates="user")
+
 
 class Client(Base):
     """
@@ -84,6 +87,7 @@ class Client(Base):
     need_mental_health_support_bool = Column(Boolean)
     cases = relationship("ClientCase", back_populates="client")
 
+
 class ClientCase(Base):
     """ClientCase model representing case assignments between users and clients."""
     __tablename__ = "client_cases"
@@ -101,4 +105,3 @@ class ClientCase(Base):
 
     client = relationship("Client", back_populates="cases")
     user = relationship("User", back_populates="cases")
-

@@ -24,7 +24,7 @@ jobs:
           pip install setuptools wheel
           pip install -r requirements.txt
           # Add linting tools
-          pip install pylint flake8
+          pip install pylint
 
       # new step for linting and formatting
       - name: Run Linters and Formatters
