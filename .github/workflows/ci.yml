@@ -37,6 +37,14 @@ jobs:
       - name: Run Tests
         run: |
           python -m pytest tests/
+      
+      # Add artifact storage for test results
+      - name: Store test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: test-results.xml
+          if-no-files-found: warn
 
   docker:
     needs: test
@@ -72,6 +80,42 @@ jobs:
           # Test API endpoint
           curl -f http://localhost:8000/docs || (echo "API endpoint test failed" && exit 1)
 
+  # New job for Docker Compose validation
+  docker-compose:
+    needs: docker
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        
+      - name: Validate docker-compose.yml
+        run: |
+          if [ -f "docker-compose.yml" ]; then
+            docker-compose config
+          else
+            echo "docker-compose.yml not found"
+            exit 1
+          fi
+          
+      - name: Run with docker-compose
+        run: |
+          docker-compose up -d
+          sleep 10
+          docker-compose ps
+          # Test service is running
+          curl -f http://localhost:8000/docs || (echo "Service unavailable" && exit 1)
+          docker-compose down
+
+      - name: Store Docker Compose logs
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: docker-compose-logs
+          path: |
+            docker-compose.log
+            logs/
+          if-no-files-found: ignore
+          
       - name: Print Success Message
         run: |
           echo "CI Pipeline completed successfully!"
