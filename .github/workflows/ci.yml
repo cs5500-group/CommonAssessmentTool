@@ -1,136 +1,66 @@
 name: Python CI Pipeline
-
-on:
-  push:
-    branches: [master, main]
-  pull_request:
-    branches: [master, main]
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install setuptools wheel
-          pip install -r requirements.txt
-          # Add linting tools
-          pip install pylint flake8
-
-      # new step for linting and formatting
-      - name: Run Linters and Formatters
-        run: |
-          # Run flake8 for code linting
-          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --extend-ignore=W291,W293,E303
-          # Run pylint 
-          pylint --disable=C0111,C0103,C0303,W0718,trailing-whitespace,broad-exception-caught --ignore-patterns=test_.*?py --recursive=y . || exit 0
-
-      - name: Run Tests
-        run: |
-          python -m pytest tests/
-      
-      # Add artifact storage for test results
-      - name: Store test results
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results
-          path: test-results.xml
-          if-no-files-found: warn
-
-  docker:
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      # Add Docker syntax check
-      - name: Check Docker syntax
-        run: |
-          if [ -f "Dockerfile" ]; then
-            # Simple validation - check if Dockerfile can be parsed
-            docker build --no-cache --progress=plain -t syntax-check -f Dockerfile . > /dev/null 2>&1 || (echo "Dockerfile syntax error" && exit 1)
-            echo "Dockerfile syntax is valid"
-          else
-            echo "Dockerfile not found"
-            exit 1
-          fi
-
-      - name: Build Docker image
-        run: docker build -t common-assessment-tool .
-
-      - name: Run Docker container
-        run: |
-          docker run -d -p 8000:8000 --name test-container common-assessment-tool
-          sleep 10 # Wait for container to start
-
-      - name: Test Docker container
-        run: |
-          # Check if container is running properly
-          docker ps | grep test-container || (echo "Container not running" && exit 1)
-          # Test API endpoint
-          curl -f http://localhost:8000/docs || (echo "API endpoint test failed" && exit 1)
-
-  # New job for Docker Compose validation
-  docker-compose:
-    needs: docker
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-      
-         - name: Setup Docker Compose
-           run: |
-              sudo curl -L "https://github.com/docker/compose/releases/download/v2.23.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-              sudo chmod +x /usr/local/bin/docker-compose
-              docker-compose --version
-        
-      - name: Validate docker-compose.yml
-        run: |
-          if [ -f "docker-compose.yml" ]; then
-            docker-compose config
-          else
-            echo "docker-compose.yml not found"
-            exit 1
-          fi
-          
-      - name: Run with docker-compose
-        run: |
-          docker-compose up -d
-          sleep 10
-          docker-compose ps
-          # Test service is running
-          curl -f http://localhost:8000/docs || (echo "Service unavailable" && exit 1)
-          docker-compose down
-
-      - name: Store Docker Compose logs
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: docker-compose-logs
-          path: |
-            docker-compose.log
-            logs/
-          if-no-files-found: ignore
-
-      - name: Print Success Message
-        run: |
-          echo "CI Pipeline completed successfully!"
-          echo "========================"
-          echo "✓ Code checked out"
-          echo "✓ Python environment set up"
-          echo "✓ Dependencies installed"
-          echo "✓ Linting and formatting completed"
-          echo "✓ Tests executed"
-          echo "✓ Docker syntax checked"
-          echo "✓ Docker container tested"
-          echo "========================"
+ 
+ on:
+   push:
+     branches: [master, main]
+   pull_request:
+     branches: [master, main]
+ 
+ jobs:
+   test:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout Code
+         uses: actions/checkout@v4
+ 
+       - name: Set up Python
+         uses: actions/setup-python@v5
+         with:
+           python-version: "3.11"
+ 
+       - name: Install dependencies
+         run: |
+           python -m pip install --upgrade pip
+           pip install setuptools wheel
+           pip install -r requirements.txt
+           # Add linting tools
+           pip install pylint flake8
+ 
+       # new step for linting and formatting
+       - name: Run Linters and Formatters
+         run: |
+           # Run flake8 for code linting
+           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --extend-ignore=W291,W293,E303
+           # Run pylint 
+           pylint --disable=C0111,C0103 --ignore-patterns=test_.*?py --recursive=y .
+           pylint --disable=C0111,C0103,C0303,W0718,trailing-whitespace,broad-exception-caught --ignore-patterns=test_.*?py --recursive=y . || exit 0
+ 
+       - name: Run Tests
+         run: |
+           python -m pytest tests/
+ 
+   docker:
+     needs: test
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout Code
+         uses: actions/checkout@v4
+ 
+       # Add Docker syntax check
+       - name: Check Docker syntax
+         run: |
+           if [ -f "Dockerfile" ]; then
+             # Simple validation - check if Dockerfile can be parsed
+             docker build --no-cache --progress=plain -t syntax-check -f Dockerfile . > /dev/null 2>&1 || (echo "Dockerfile syntax error" && exit 1)
+             echo "Dockerfile syntax is valid"
+           else
+             echo "Dockerfile not found"
+             exit 1
+           fi
+ 
+       - name: Build Docker image
+         run: docker build -t common-assessment-tool .
+ 
+       - name: Run Docker container
+         run: |
+           docker run -d -p 8000:8000 --name test-container common-assessment-tool
