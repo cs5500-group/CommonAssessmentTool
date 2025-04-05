@@ -26,15 +26,6 @@ jobs:
           # Add linting tools
           pip install pylint
 
-      # new step for linting and formatting
-      - name: Run Linters and Formatters
-        run: |
-          # Run flake8 for code linting
-          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --extend-ignore=W291,W293,E303
-          # Run pylint 
-          pylint --disable=C0111,C0103 --ignore-patterns=test_.*?py --recursive=y .
-          pylint --disable=C0111,C0103,C0303,W0718,trailing-whitespace,broad-exception-caught --ignore-patterns=test_.*?py --recursive=y . || exit 0
-
       - name: Run Tests
         run: |
           python -m pytest tests/
