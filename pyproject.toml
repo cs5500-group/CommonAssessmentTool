@@ -8,6 +8,7 @@ disable = [
     "C0115",  # missing-class-docstring
     "C0116",  # missing-function-docstring
     "R0903",  # too-few-public-methods
+    "C0103",  # doesn't-conform-snake_case-naming
 ]
 
 # Customize max line length
