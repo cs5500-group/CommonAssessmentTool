@@ -83,3 +83,60 @@ To stop the service, run:
 ```bash
 docker compose down
 ```
+
+-------------------------CI/CD Pipeline Implementation-------------------------
+Overview
+This repository implements a Continuous Integration (CI) pipeline using GitHub Workflows. The pipeline automates the process of code validation, testing, and Docker container verification to ensure high code quality and reliable deployment.
+CI Pipeline Features
+The CI pipeline performs the following operations:
+
+Automatically runs on push or pull request events to main/master branches
+Executes code linting with Pylint to maintain code quality
+Runs automated tests with pytest
+Validates Dockerfile syntax
+Builds the Docker image
+Runs the container to verify it functions as expected
+
+How to Use
+Triggering the CI Pipeline
+The CI pipeline is automatically triggered when:
+
+Code is pushed to the main/master branch
+A pull request is opened against the main/master branch
+
+Viewing CI Results
+
+Go to the "Actions" tab in the GitHub repository
+Select the workflow run you want to examine
+View the results of each job and step
+
+Pipeline Configuration
+The CI pipeline is defined in .github/workflows/ci.yml and consists of the following jobs:
+Test Job
+
+Sets up Python 3.11
+Installs project dependencies
+Runs Pylint for code linting
+Executes pytest tests
+
+Docker Job
+
+Verifies Dockerfile syntax
+Builds the Docker image
+Runs the container and tests connectivity
+Verifies the application is accessible
+
+Development Notes
+
+The pipeline enforces code quality standards using Pylint
+Test failures or Docker verification issues will cause the workflow to fail
+The CI pipeline will generate test reports for review
+
+Modifying the CI Pipeline
+To modify the CI pipeline:
+
+Edit the .github/workflows/ci.yml file
+Commit and push your changes
+The updated workflow will be used for subsequent runs
+
+By using this CI pipeline, we ensure that code changes meet quality standards and the application can be reliably containerized before deployment.
