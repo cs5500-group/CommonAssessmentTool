@@ -142,3 +142,7 @@ Commit and push your changes
 The updated workflow will be used for subsequent runs
 
 By using this CI pipeline, we ensure that code changes meet quality standards and the application can be reliably containerized before deployment.
+
+---------------------- how to access the public address ----------------------
+
+go to the url: https://commen-accessment-tool-app-v43vvietaq-uc.a.run.app/docs
