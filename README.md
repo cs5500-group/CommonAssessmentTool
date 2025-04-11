@@ -26,7 +26,7 @@ This also has an API file to interact with the front end, and logic in order to 
 
 3. Load data into database (python initialize_data.py)
 
-4. Go to SwaggerUI (http://127.0.0.1:8000/docs)
+4. Go to SwaggerUI (http://127.0.0.1:8080/docs)
 
 4. Log in as admin (username: admin password: admin123)
 
@@ -67,10 +67,10 @@ This also has an API file to interact with the front end, and logic in order to 
 
 2. Run the application:
     ```bash
-    docker run -p 8000:8000 common-assessment-tool-app
+    docker run -p :8080 common-assessment-tool-app
     ```
     
-3. Go to SwaggerUI (http://127.0.0.1:8000/docs)
+3. Go to SwaggerUI (http://127.0.0.1:8080/docs)
 
 -------------------------How to run the application with Docker compose-------------------------
 

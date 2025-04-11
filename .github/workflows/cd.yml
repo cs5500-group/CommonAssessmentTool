@@ -44,9 +44,9 @@ jobs:
 
       - name: Run Docker container
         run: |
-          docker run -d -p 8000:8000 common-assessment-tool
+          docker run -d -p 8080:8080 common-assessment-tool
           sleep 10  # Wait for container to start
 
       - name: Test Docker container
         run: |
-          curl http://localhost:8000/docs
+          curl http://localhost:8080/docs

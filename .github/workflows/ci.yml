@@ -60,7 +60,7 @@ jobs:
 
       - name: Run Docker container
         run: |
-          docker run -d -p 8000:8000 --name test-container common-assessment-tool
+          docker run -d -p 8080:8080: --name test-container common-assessment-tool
           sleep 10 # Wait for container to start
 
       - name: Test Docker container
@@ -68,7 +68,7 @@ jobs:
           # Check if container is running properly
           docker ps | grep test-container || (echo "Container not running" && exit 1)
           # Test API endpoint
-          curl -f http://localhost:8000/docs || (echo "API endpoint test failed" && exit 1)
+          curl -f http://localhost:8080/docs || (echo "API endpoint test failed" && exit 1)
 
       - name: Print Success Message
         run: |
