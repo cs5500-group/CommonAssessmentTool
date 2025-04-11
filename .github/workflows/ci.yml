@@ -60,7 +60,7 @@ jobs:
 
       - name: Run Docker container
         run: |
-          docker run -d -p 8080:8080 --name test-container common-assessment-tool
+          docker run -d -p 8080:8080 --name test-container -e PORT=8080 common-assessment-tool
           sleep 10 # Wait for container to start
 
       - name: Test Docker container
