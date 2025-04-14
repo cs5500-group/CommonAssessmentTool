@@ -13,23 +13,30 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Authenticate to Google Cloud
-        id: auth
         uses: google-github-actions/auth@v1
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
-          project_id: ${{ secrets.GCP_PROJECT_ID }}
 
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          export_default_credentials: true
+
+      - name: Configure Docker authentication
+        run: |
+          gcloud auth configure-docker
 
       - name: Build and deploy to Cloud Run
         run: |
+          IMAGE=gcr.io/${{ secrets.GCP_PROJECT_ID }}/commonassessmenttool
+
           # Build and push Docker image to Google Container Registry
-          gcloud builds submit --tag gcr.io/${{ secrets.GCP_PROJECT_ID }}/commonassessmenttool
-          
+          gcloud builds submit --tag $IMAGE
+
           # Deploy to Cloud Run
           gcloud run deploy commonassessmenttool \
-            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/commonassessmenttool \
+            --image $IMAGE \
             --platform managed \
             --region us-central1 \
             --allow-unauthenticated
