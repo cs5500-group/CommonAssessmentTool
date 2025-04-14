@@ -1,0 +1,32 @@
+name: Deploy to Cloud Run
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+
+      - name: Build and deploy to Cloud Run
+        run: |
+          # Build and push Docker image to Google Container Registry
+          gcloud builds submit --tag gcr.io/${{ secrets.GCP_PROJECT_ID }}/commonassessmenttool
+          
+          # Deploy to Cloud Run
+          gcloud run deploy commonassessmenttool \
+            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/commonassessmenttool \
+            --platform managed \
+            --region us-central1 \
+            --allow-unauthenticated
