@@ -191,7 +191,7 @@ https://commen-accessment-tool-app-v43vvietaq-uc.a.run.app/docs
 
 ### Overview
 This repository implements a Continuous Deployment (CD) pipeline that automatically deploys our backend application to a public cloud endpoint whenever a new release is created. This automation ensures our team can quickly and reliably make new releases without manual deployment steps.
-Public Endpoint
+
 
 ### How the CD Pipeline Works
 Our deployment pipeline uses GitHub Workflows to automate the deployment process:
