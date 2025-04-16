@@ -186,3 +186,39 @@ https://commen-accessment-tool-app-v43vvietaq-uc.a.run.app/docs
 ```
 
 ---
+
+## Automatic Deployment Pipeline
+
+### Overview
+This repository implements a Continuous Deployment (CD) pipeline that automatically deploys our backend application to a public cloud endpoint whenever a new release is created. This automation ensures our team can quickly and reliably make new releases without manual deployment steps.
+Public Endpoint
+
+### How the CD Pipeline Works
+Our deployment pipeline uses GitHub Workflows to automate the deployment process:
+
+When a release is created from the master branch, the CD workflow is automatically triggered
+The workflow builds a Docker container with the latest code
+The container is then deployed to our cloud infrastructure
+The application is automatically restarted with the new version
+
+### Creating a New Release
+To deploy a new version of the application:
+Ensure all changes are merged to the master branch
+Go to the "Releases" section in the GitHub repository
+Click "Draft a new release"
+Create a new tag (e.g., v1.0.1)
+Add a title and description for the release
+Click "Publish release"
+
+The CD pipeline will automatically start and deploy the latest version to the public endpoint.
+Monitoring Deployments
+You can monitor the status of deployments:
+
+Go to the "Actions" tab in the repository
+Look for the most recent "CD Pipeline" workflow run
+Check the logs for detailed information about the deployment process
+
+If a deployment fails, the workflow logs will provide error information for troubleshooting.
+
+### Local Development
+For local development, see the main README for instructions on running the application using Docker or directly with Python.
